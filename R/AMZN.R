@@ -20,10 +20,14 @@ AMZN_d_2y <- AMZN_60m_2y %>%
          Low_pct  = (Low - Pclose ) / Pclose,
          Close_low_pct = (Close - Low ) / Low)
 
+AMZN_d_2y %>% select(Date, Low_pct, Close_low_pct) %>%
+  filter(Low_pct < -0.02) %>%   # Daily down by 2% +
+  tidyr::gather(pct, value, -Date) %>%
+  ggplot() + #facet_wrap(~pct) +
+  geom_bar(aes(x = Date, y = value, fill = pct), stat="identity") +
+  theme_bw()
+
 AMZN_d_2y %>%
   filter(Low_pct < -0.02) %>%
-  filter(Close_low_pct > 0.02)
+  filter(Close_low_pct > 0.02) -> A
 
-ggplot(AMZN_d_2y) +
-  geom_line(aes(x = Date, y = Low_pct)) +
-  theme_bw()
